@@ -24,7 +24,19 @@
 #include <llvm/Transforms/Scalar/Reassociate.h>
 #include <llvm/Transforms/Scalar/SCCP.h>
 #include <llvm/Transforms/Scalar/SimplifyCFG.h>
+#include <polly/CodeGen/IslAst.h>
+#include <polly/CodePreparation.h>
+#include <polly/DependenceInfo.h>
+#include <polly/ScopPass.h>
+#include <polly/RegisterPasses.h>
 
+void Optimizer::PollyOptimize(llvm::Function*  fn){
+    llvm::PassBuilder pb;
+    llvm::FunctionPassManager fpm;
+    llvm::ModulePassManager mpm;
+    polly::ScopPassManager spm;
+    
+}
 
 void Optimizer::Optimize(llvm::Function* fn) {
     llvm::PassBuilder pb;

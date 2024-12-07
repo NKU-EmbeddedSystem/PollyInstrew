@@ -19,8 +19,12 @@ client_bytes = custom_target('hex-client', output: 'client.inc', input: client,
                              capture: true,
                              command: [python3, '-c', pytobytes, '@INPUT@'])
 
+
+llvm_config = find_program('llvm-config',required:true)
+llvm_libs = run_command(llvm_config,'--libs').stdout().strip().split()
+
 executable('instrew', sources, client_bytes,
-           include_directories: include_directories('.', '../shared'),
+           include_directories: include_directories('.', '../shared','/usr/local/include/polly'),
            dependencies: [librellume, fadec, frvdec, farmdec, libllvm, libcrypto, instrew_api],
-           link_args: ['-ldl'],
+           link_args: ['-ldl'] + llvm_libs,
            install: true)

@@ -18,6 +18,7 @@ public:
     Optimizer(const InstrewConfig& instrew_cfg) : instrew_cfg(instrew_cfg) {}
 
     void Optimize(llvm::Function* fn);
+    void PollyOptimize(llvm::Function* fn);
 };
 
 #endif
