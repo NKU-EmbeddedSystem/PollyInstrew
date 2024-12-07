@@ -32,7 +32,7 @@
 #include <unistd.h>
 #include <sstream>
 #include <unordered_map>
-
+#include <iostream>
 
 #define SPTR_ADDR_SPACE 1
 
@@ -448,6 +448,17 @@ private:
 
 public:
     void Translate(uintptr_t addr) {
+        bool isKernel = false;
+
+        // //print address
+        // std::cout<<"addr:0x"<<std::hex<<addr<<std::endl;
+        
+        // identify function(template)
+        if(addr==0x401c71||addr==0x401a80){
+            isKernel  = true;
+            std::cout<<"kernel function"<<std::endl;
+        }
+
         auto time_predecode_start = std::chrono::steady_clock::now();
         std::vector<DecodedInst> insts;
 
