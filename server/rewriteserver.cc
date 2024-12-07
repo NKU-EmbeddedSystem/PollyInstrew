@@ -494,7 +494,13 @@ public:
             mod->print(llvm::errs(), nullptr);
 
         auto time_llvm_opt_start = std::chrono::steady_clock::now();
-        optimizer.Optimize(fn);
+        if(isKernel){
+            optimizer.PollyOptimize(fn);
+            mod->print(llvm::errs(), nullptr);
+        }
+        else{
+            optimizer.Optimize(fn);
+        }
         if (instrew_cfg.dumpir & 4)
             mod->print(llvm::errs(), nullptr);
 
