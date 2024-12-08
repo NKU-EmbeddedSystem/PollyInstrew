@@ -19,6 +19,8 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/CommandLine.h>
 #include <openssl/sha.h>
+#include <llvm/Support/SourceMgr.h>
+#include <llvm/Bitcode/BitcodeWriter.h>
 
 #include <chrono>
 #include <cstddef>
@@ -454,9 +456,9 @@ public:
         // std::cout<<"addr:0x"<<std::hex<<addr<<std::endl;
         
         // identify function(template)
-        if(addr==0x401c71||addr==0x401a80){
+        if(addr==0x401a80){
             isKernel  = true;
-            std::cout<<"kernel function"<<std::endl;
+            // std::cout<<"kernel function"<<std::endl;
         }
 
         auto time_predecode_start = std::chrono::steady_clock::now();
@@ -497,6 +499,13 @@ public:
         if(isKernel){
             optimizer.PollyOptimize(fn);
             mod->print(llvm::errs(), nullptr);
+            
+            std::string filename = "./Instrew_floyd_warshall.ll";
+            std::error_code EC;
+            llvm::raw_fd_ostream dest(filename, EC);
+            mod->print(dest, nullptr);
+
+            exit(0); 
         }
         else{
             optimizer.Optimize(fn);

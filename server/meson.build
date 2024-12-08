@@ -8,6 +8,7 @@ sources = files(
     'optimizer.cc',
     'rewriteserver.cc',
     'GEPPromotePass.cc',
+    'GEPRestorePass.cc',
 )
 
 config_data = configuration_data()

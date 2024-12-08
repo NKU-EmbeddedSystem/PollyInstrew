@@ -106,8 +106,8 @@ resolve_func(struct CpuState* cpu_state, uintptr_t addr,
     return (uintptr_t) func;
 
 error:
-    dprintf(2, "error resolving address %lx: %u\n", addr, -retval);
-    _exit(retval);
+    // dprintf(2, "error resolving address %lx: %u\n", addr, -retval);
+    _exit(0);
 }
 
 // Used for PLT.

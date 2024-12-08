@@ -886,7 +886,7 @@ bool GEPpromoteMemToRegister(Function &F, DominatorTree &DT, AssumptionCache &AC
         if(GetElementPtrInst* GEP = dyn_cast<GetElementPtrInst>(I)){ // Use GEP
                                                                      // But there is a question "Is GEP's situation the same as alloc?"
           if(isGEPPromotable(GEP)){
-              llvm::outs()<<"[Instrew]GEP:"<<*GEP<<"\n";
+          //  llvm::outs()<<"[Instrew]GEP:"<<*GEP<<"\n";
               GEPs.push_back(GEP);
           }
         }
@@ -924,16 +924,6 @@ bool isGEPPromotable(const GetElementPtrInst *GEP){
 //      llvm::outs()<<"[Instrew]is not Local GEP:"<<*GEP<<"\n";
     return false;
   }
-  //需要区分
-  //这里又是一个与alloc的区别之处
-  //alloc的store删除只要保证函数功能正常执行，是没有语义上的错误的
-  //但是GEP不同，需要识别出来不同的语义才能够确保优化正确
-// 只有Load的情况怎么办呢？
-  // 这里由于我们限制了GEP的使用场景
-  // 仅仅适用于模拟堆栈操作的部分）
-  // 所以这里对于load和store类型的判断暂且删除
-  // (GEP从栈中拿出来都是i8，存的时候都用i32，但是不影响代码的正确性)
-  llvm::outs()<<"[Instrew]GEP:"<<*GEP<<"\n";
   bool hasStore = false;
   for(const User *U : GEP->users()){    
     if (const LoadInst *LI = dyn_cast<LoadInst>(U)) {
