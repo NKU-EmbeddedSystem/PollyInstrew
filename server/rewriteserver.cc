@@ -165,6 +165,8 @@ private:
 
     uint8_t config_hash[SHA_DIGEST_LENGTH];
 
+    uintptr_t pre_addr = 0;
+
     std::chrono::steady_clock::duration dur_predecode{};
     std::chrono::steady_clock::duration dur_lifting{};
     std::chrono::steady_clock::duration dur_instrument{};
@@ -451,15 +453,15 @@ private:
 public:
     void Translate(uintptr_t addr) {
         bool isKernel = false;
-
-        // //print address
+        // // print address
         // std::cout<<"addr:0x"<<std::hex<<addr<<std::endl;
         
         // identify function(template)
-        if(addr==0x401a80){
+        if(addr-pre_addr==0x4018a0-0x401a7a){
             isKernel  = true;
-            // std::cout<<"kernel function"<<std::endl;
+            std::cout<<"kernel function"<<std::endl;
         }
+        pre_addr = addr;
 
         auto time_predecode_start = std::chrono::steady_clock::now();
         std::vector<DecodedInst> insts;
@@ -498,9 +500,8 @@ public:
         auto time_llvm_opt_start = std::chrono::steady_clock::now();
         if(isKernel){
             optimizer.PollyOptimize(fn);
-            mod->print(llvm::errs(), nullptr);
             
-            std::string filename = "./Instrew_floyd_warshall.ll";
+            std::string filename = "/home/zby/test202412/PollyInstrew/Instrew_doitgen.ll";
             std::error_code EC;
             llvm::raw_fd_ostream dest(filename, EC);
             mod->print(dest, nullptr);

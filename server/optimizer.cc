@@ -104,7 +104,7 @@ void Optimizer::PollyOptimize(llvm::Function*  fn){
     fpm.addPass(llvm::GEPRestorePass());
     fpm.addPass(llvm::DCEPass());
     fpm.run(*fn,fam);
-    GenerateCode(*fn);
+    // GenerateCode(*fn);
 }
 
 
@@ -152,7 +152,7 @@ void GenerateCode(llvm::Function& fn){
   spm.addPass(polly::PruneUnprofitablePass());         // 5 
   spm.addPass(polly::IslScheduleOptimizerPass());      // 6
 
-  spm.addPass(polly::CodeGenerationPass());
+  //spm.addPass(polly::CodeGenerationPass());
   fpm.addPass(polly::createFunctionToScopPassAdaptor(std::move(spm)));
   fpm.addPass(pb.buildFunctionSimplificationPipeline(llvm::OptimizationLevel::O3,llvm::ThinOrFullLTOPhase::None)); // 7
   //mpm.addPass(llvm::createModuleToFunctionPassAdaptor(std::move(fpm)));

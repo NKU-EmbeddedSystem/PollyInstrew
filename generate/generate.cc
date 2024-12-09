@@ -107,8 +107,8 @@ int main(int argc, char **argv) {
   // Load the input file
   llvm::SMDiagnostic Err;
   std::unique_ptr<llvm::LLVMContext> Ctx = std::make_unique<llvm::LLVMContext>();
-  //std::unique_ptr<llvm::Module> Mod =llvm::parseIRFile("/home/zby/PolyBenchC-4.2.1/medley/floyd-warshall/floyd-warshall-arm.ll",Err,*Ctx);
-  std::unique_ptr<llvm::Module> Mod =llvm::parseIRFile("./PollyInstrew_floyd_warshall.ll",Err,*Ctx);
+  // std::unique_ptr<llvm::Module> Mod =llvm::parseIRFile("/home/zby/test202412/PolyBenchC-4.2.1/linear-algebra/kernels/doitgen/doitgen.ll",Err,*Ctx);
+  std::unique_ptr<llvm::Module> Mod =llvm::parseIRFile("/home/zby/test202412/PollyInstrew/generate/PollyInstrew_doitgen.ll",Err,*Ctx);
    // Step2 : set manager
  llvm::PassBuilder pb;
   llvm::FunctionPassManager fpm;
@@ -192,7 +192,6 @@ int main(int argc, char **argv) {
 
 
   fpm.addPass(llvm::InstCombinePass());
-
   fpm.addPass(polly::CodePreparationPass());
 
   // Polly Optimize
@@ -205,22 +204,28 @@ int main(int argc, char **argv) {
 
   spm.addPass(polly::CodeGenerationPass());
   fpm.addPass(polly::createFunctionToScopPassAdaptor(std::move(spm)));
-
-
   fpm.addPass(pb.buildFunctionSimplificationPipeline(llvm::OptimizationLevel::O3,llvm::ThinOrFullLTOPhase::None)); // 7
-
-  fpm.addPass(polly::createFunctionToScopPassAdaptor(std::move(spm)));
 
   for(llvm::Function &F : *Mod){
     if(F.isDeclaration()){
       continue;
     }
-    llvm::outs()<<"[pollyOpt]Function:\n"<<F<<"\n";
+    //llvm::outs()<<"[pollyOpt]Function:\n"<<F<<"\n";
     fpm.run(F,fam);
-    llvm::outs()<<"[pollyOpt]end\n";
+    //llvm::outs()<<"[pollyOpt]end\n";
   }
 
-   Mod->print(llvm::outs(), nullptr);
+  // std::string filename = "/home/zby/test202412/PollyInstrew/generate/ref_doitgen.ll";
+  // std::error_code EC;
+  // llvm::raw_fd_ostream dest(filename, EC);
+  // Mod->print(dest, nullptr);
+  // Mod->print(llvm::outs(), nullptr);
+
+  std::string filename = "/home/zby/test202412/PollyInstrew/generate/PollyInstrew_doitgen_multi.ll";
+  std::error_code EC;
+  llvm::raw_fd_ostream dest(filename, EC);
+  Mod->print(dest, nullptr);
+  //Mod->print(llvm::outs(), nullptr);
   // Free the LLVM objects
    Mod.reset();
 
